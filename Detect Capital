@@ -51,3 +51,13 @@ bool detectCapitalUse(string w,int count=0) {
         for(auto ch:w)  if(isupper(ch)) ++count;
         return ((w[0]>='A'&&w[0]<='Z') && (count==1 || count==w.length())) || count==0?true:false;
     }
+
+
+//inbuilt
+class Solution {
+public:
+    bool detectCapitalUse(string w,int c=0) {
+        c = count_if(w.begin(), w.end(), ::isupper);
+        return isupper(w[0]) && c==1 || c==w.length() || !c;
+    }
+};
