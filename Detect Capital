@@ -44,3 +44,10 @@ public:
         return false;
     }
 };
+
+//clean code less lines
+
+bool detectCapitalUse(string w,int count=0) {
+        for(auto ch:w)  if(isupper(ch)) ++count;
+        return ((w[0]>='A'&&w[0]<='Z') && (count==1 || count==w.length())) || count==0?true:false;
+    }
