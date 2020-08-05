@@ -1,0 +1,240 @@
+//ATTEMPT 1 -> WRONG ANSWER
+
+class Trie_node{
+public:
+    vector<Trie_node *> next;
+    bool end;
+    Trie_node()
+    {
+        next = std::vector<Trie_node *>(26,NULL);
+        end = false;
+    }
+};
+
+class Trie
+{
+public:
+    Trie_node *root;
+    Trie(){
+        root = new Trie_node();
+    }
+
+    void insert(string &word) {
+        Trie_node *node = root;
+        for(char c : word)
+        {
+            if(node ->next[c - 'a'] == NULL)
+                node ->next[c - 'a'] = new Trie_node();
+            node = node ->next[c - 'a'];
+        }
+        node->end = true;
+    }
+    
+    bool search(string &w) {
+        Trie_node *node = root;
+        
+        stack<pair<int,int>> stk;
+        stack<Trie_node*> nd;
+        
+        int guess=-1,j;
+        cout<<w<<endl;
+        for(int i=0;i<w.length();i++){
+            cout<<"i am : "<<i<<endl;
+            if(w[i] == '.'){
+                for(j=guess+1;j<26;j++){
+                    if(node ->next[j] != NULL){
+                        // cout<<"here"<<endl;
+                        stk.push(make_pair(i,j));
+                        nd.push(node->next[j]);
+                        break;
+                    }
+                }
+                // cout<<"j :: "<<j;
+                if(j==26 && stk.empty()){
+                    return false;
+                }else if(j==26){
+                    i = stk.top().first;
+                    guess = stk.top().second;
+                    node = nd.top();
+                    stk.pop();
+                    nd.pop();
+                }
+                node = node ->next[j];
+                continue;
+            }    
+            if(node ->next[w[i] - 'a'] == NULL){
+                if(stk.empty())
+                    return false;
+                // cout<<"2\n";
+                i = stk.top().first;
+                guess = stk.top().second;
+                node = nd.top();
+                stk.pop();
+                nd.pop();
+                
+                // cout<<"sec :: "<<i<<" , "<<j<<endl;
+                continue;
+            }
+            node = node ->next[w[i] - 'a'];
+        }
+        // cout<<"3\n";
+        return (node->end == true);
+    }
+};
+
+
+class WordDictionary {
+    Trie *T;
+public:
+    /** Initialize your data structure here. */
+    WordDictionary() {
+        T = new Trie();
+    }
+    
+    /** Adds a word into the data structure. */
+    void addWord(string word) {
+        T->insert(word);
+    }
+    
+    /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
+    bool search(string word) {
+        cout<<word<<endl;
+        return T->search(word);
+    }
+};
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * WordDictionary* obj = new WordDictionary();
+ * obj->addWord(word);
+ * bool param_2 = obj->search(word);
+ */
+ 
+ 
+ 
+ //*******************************************
+ 
+ //ATTEMPT 2 -> WRONG ANSWER
+ 
+ class Trie_node{
+public:
+    vector<Trie_node *> next;
+    bool end;
+    Trie_node()
+    {
+        next = std::vector<Trie_node *>(26,NULL);
+        end = false;
+    }
+};
+
+class Trie
+{
+public:
+    Trie_node *root;
+    Trie(){
+        root = new Trie_node();
+    }
+
+    void insert(string &word) {
+        Trie_node *node = root;
+        for(char c : word)
+        {
+            if(node ->next[c - 'a'] == NULL)
+                node ->next[c - 'a'] = new Trie_node();
+            node = node ->next[c - 'a'];
+        }
+        node->end = true;
+    }
+    
+    void task(stack<pair<int,int>> &stk, stack<Trie_node*> &nd,int &i,int &guess, Trie_node* &node)     {
+            
+            i= stk.top().first;
+            guess = stk.top().second;
+            stk.pop();
+
+            node = nd.top();
+            nd.pop();
+        
+    }
+    
+    bool search(string &w) {
+        Trie_node *node = root;
+        
+        stack<pair<int,int>> stk;
+        stack<Trie_node*> nd;
+        int guess = -1,i,guess_i=0;
+        
+        do{
+            if(!stk.empty()){
+                task(stk,nd,guess_i,guess,node);
+                cout<<" do : "<<guess_i<<" : "<<guess<<endl;
+            }
+            for(i=guess_i;i<w.length();i++){
+                if(w[i] == '.'){
+                    // cout<<". exists << "<<i<<endl;
+                    int j;
+                    for(j=guess+1;j<26;j++){
+                        if(node ->next[j] != NULL){
+                            stk.push(make_pair(i,j));
+                            nd.push(node);
+                            break;
+                        }
+                    }
+
+                    if(j!=26){
+                        node = node->next[j];
+                        continue;
+                    }else if(stk.empty()){
+                        return false;
+                    }else{
+                        // cout<<">>i :: "<<i<<endl;
+                        task(stk,nd,guess_i,guess,node);
+                        continue;
+                    }
+                }
+                if(node ->next[w[i]-'a'] == NULL){
+
+                    if(stk.empty())
+                        return false;
+
+                    // cout<<"i :: "<<i<<endl;
+                    task(stk,nd,guess_i,guess,node);
+                    // cout<<"task :: "<<i<<" , "<<guess<<endl;
+                    continue;
+                }
+                node = node ->next[w[i] - 'a'];
+            }
+        }while(!stk.empty() && node->end != true);
+        
+        return (node->end == true);
+    }
+};
+
+
+class WordDictionary {
+    Trie *T;
+public:
+    /** Initialize your data structure here. */
+    WordDictionary() {
+        T = new Trie();
+    }
+    
+    /** Adds a word into the data structure. */
+    void addWord(string word) {
+        // cout<<word<<endl;
+        T->insert(word);
+    }
+    
+    /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
+    bool search(string word) {
+        // cout<<word<<endl;
+        return T->search(word);
+    }
+};
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * WordDictionary* obj = new WordDictionary();
+ * obj->addWord(word);
+ * bool param_2 = obj->search(word);
+ */
