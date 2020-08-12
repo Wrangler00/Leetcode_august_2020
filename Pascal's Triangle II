@@ -1,0 +1,21 @@
+class Solution {
+public:
+    vector<int> getRow(int ind) {
+        vector<int> ans;
+        ans.push_back(1);
+        
+        for(int i=0;i<ind;i++){
+            for(int j=1;j<=i+1;j++){
+                if(j==i+1){
+                    ans.push_back(1);
+                }else{
+                    int __t = ans[j];
+                    ans[j] += tmp;
+                    tmp = __t;
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
