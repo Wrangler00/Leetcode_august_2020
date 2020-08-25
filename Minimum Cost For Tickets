@@ -67,3 +67,22 @@ public:
         return dp[mostDay];
     }
 };
+
+//more concise code (using little help)
+
+class Solution {
+public:
+    int mincostTickets(vector<int>& days, vector<int>& c) {
+        int mostDay = days.back();
+        vector<int> dp(mostDay+1,0);
+        
+        for(auto v:days)    dp[v] = 1;
+        
+        for(int i=1;i<=mostDay;i++)
+            dp[i] = dp[i]
+            ?   min(dp[i-1]+c[0],min(c[1]+dp[max(0,i-7)],c[2]+dp[max(0,i-30)]))
+            :   dp[i-1];
+        
+        return dp[mostDay];
+    }
+};
