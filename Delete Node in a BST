@@ -55,3 +55,67 @@ public:
         return root;
     }
 };
+
+
+//cpp solution 2 without copying the value of node (also not my solution)
+
+Node *deleteNode(Node *root,  int x)
+{
+    if(!root)
+    return root;
+    
+    if(x > root->data)
+    {
+    root->right=deleteNode(root->right,x);
+    return root;
+    }
+    
+   else if(x < root->data)
+   {
+    root->left=deleteNode(root->left,x);
+    return root;
+   }
+    
+   else // when root->data and x are equal
+    {
+        if(!root->left)//if there is only one child or no child
+        {
+        Node* temp=root->right;
+         delete(root);
+         return temp;
+        }
+        else if(!root->right)//if there is only one child or no child
+        {
+         Node* temp=root->left;
+         delete(root);
+         return temp;
+        }
+      
+       else//if both childs of the root are there
+       {
+          Node* curr=root->right;// for finding successor of root node
+          Node* left= root->left;// save the left subtree of root
+           Node* right=root->right;// save the right subtree of root
+          Node* succ_parent=NULL;// to trace the parent of succcessor of root node
+
+           delete(root);// release the root node(which is intended to be deleted)
+           
+          while(curr->left!=NULL)//find successor
+          {
+              succ_parent=curr;
+              curr=curr->left;
+          }
+           //if parent of succesor is not the root itself (to be deleted)
+           
+           if(succ_parent!=NULL)//simply adjust the right subtree of curr(succesor) and make curr as root node
+           {
+             succ_parent->left=curr->right;
+             curr->right=right;
+           }
+           curr->left=left;
+           
+          return curr;
+       }
+      
+    }
+}
